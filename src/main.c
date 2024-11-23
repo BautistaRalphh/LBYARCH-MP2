@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern double daxpy (int n, double A, double *X, double *Y, double *Z)
+// Declare the external assembly function
+extern void daxpy(int n, double A, double *X, double *Y, double *Z);
 
-int main () {
-    int n;
+int main() {
+    int n, i;
     double A;
     double *X, *Y, *Z;
 
@@ -22,40 +23,52 @@ int main () {
     Y = (double *)malloc(n * sizeof(double));
     Z = (double *)malloc(n * sizeof(double));
 
-    //Validation check
     if (!X || !Y || !Z) {
         printf("Memory allocation failed.\n");
         return -1;
     }
 
-    // Input values for the vectors
+    // Input values for vector X
     printf("\nEnter %d elements for vector X:\n", n);
-    for (int i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         printf("X[%d] = ", i);
         scanf("%lf", &X[i]);
     }
 
+    // Input values for vector Y
     printf("\nEnter %d elements for vector Y:\n", n);
-    for (int i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         printf("Y[%d] = ", i);
         scanf("%lf", &Y[i]);
     }
 
-    // Display input vectors (debugging lines)
+    // Display input vectors (debuggin line only)
     printf("\nInput Vectors (First 10 Elements):\n");
     printf("X: ");
-    for (int i = 0; i < (n < 10 ? n : 10); i++) printf("%.2f ", X[i]);
+    for (i = 0; i < (n < 10 ? n : 10); i++) {
+        printf("%.2f ", X[i]);
+    }
     printf("\nY: ");
-    for (int i = 0; i < (n < 10 ? n : 10); i++) printf("%.2f ", Y[i]);
+    for (i = 0; i < (n < 10 ? n : 10); i++) {
+        printf("%.2f ", Y[i]);
+    }
     printf("\n");
 
     // Call assembly function
+    printf("Calling daxpy function...\n");
     daxpy(n, A, X, Y, Z);
+    printf("Returned from daxpy function...\n");
 
-    // Display result (up to first 10 elements)
+    // Display result (first 10 elements)
     printf("\nResult (First 10 Elements):\n");
-    for (int i = 0; i < (n < 10 ? n : 10); i++) {
+    for (i = 0; i < (n < 10 ? n : 10); i++) {
         printf("Z[%d] = %.2f\n", i, Z[i]);
     }
 
+    // Free allocated memory
+    free(X);
+    free(Y);
+    free(Z);
+
+    return 0;
 }
