@@ -1,16 +1,12 @@
-/* Ralph Gabriel R. Bautista S15 */
-/* Ghee Kaye S. Lopez S15 */
-
 #include <stdio.h>
 #include <stdlib.h>
 
 // Declare the external assembly function
-extern void daxpy(int n, double A, double *X, double *Y, double *Z);
+extern void daxpy(int n, double* X, double* Y, double* Z, double A);
 
 int main() {
     int n, i;
     double A;
-    double *X, *Y, *Z;
 
     // Input for vector size and scalar
     printf("Enter vector size (n): ");
@@ -19,9 +15,9 @@ int main() {
     scanf("%lf", &A);
 
     // Allocate memory for vectors
-    X = (double *)malloc(n * sizeof(double));
-    Y = (double *)malloc(n * sizeof(double));
-    Z = (double *)malloc(n * sizeof(double));
+    double* X = (double*)malloc(n * sizeof(double));
+    double* Y = (double*)malloc(n * sizeof(double));
+    double* Z = (double*)malloc(n * sizeof(double));
 
     if (!X || !Y || !Z) {
         printf("Memory allocation failed.\n");
@@ -42,21 +38,9 @@ int main() {
         scanf("%lf", &Y[i]);
     }
 
-    // Display input vectors (debuggin line only)
-    printf("\nInput Vectors (First 10 Elements):\n");
-    printf("X: ");
-    for (i = 0; i < (n < 10 ? n : 10); i++) {
-        printf("%.2f ", X[i]);
-    }
-    printf("\nY: ");
-    for (i = 0; i < (n < 10 ? n : 10); i++) {
-        printf("%.2f ", Y[i]);
-    }
-    printf("\n");
-
     // Call assembly function
     printf("Calling daxpy function...\n");
-    daxpy(n, A, X, Y, Z);
+    daxpy(n, X, Y, Z, A);
     printf("Returned from daxpy function...\n");
 
     // Display result (first 10 elements)
