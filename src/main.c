@@ -1,26 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Declare the external assembly function
-extern void daxpy(int n, double* X, double* Y, double* Z, double A);
+extern void daxpy(double *X, double *Y, double *Z, int n, double A);
 
 int main() {
     int n, i;
-    double A;
+    double *X, *Y, *Z, A;
 
     // Input for vector size and scalar
     printf("Enter vector size (n): ");
-    scanf("%d", &n);
-    printf("Enter scalar value (A): ");
-    scanf("%lf", &A);
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        printf("Invalid input for vector size.\n");
+        return -1;
+    }
 
     // Allocate memory for vectors
-    double* X = (double*)malloc(n * sizeof(double));
-    double* Y = (double*)malloc(n * sizeof(double));
-    double* Z = (double*)malloc(n * sizeof(double));
+    X = (double *)malloc(n * sizeof(double));
+    Y = (double *)malloc(n * sizeof(double));
+    Z = (double *)malloc(n * sizeof(double));
 
     if (!X || !Y || !Z) {
         printf("Memory allocation failed.\n");
+        free(X);
+        free(Y);
+        free(Z);
         return -1;
     }
 
@@ -28,25 +31,42 @@ int main() {
     printf("\nEnter %d elements for vector X:\n", n);
     for (i = 0; i < n; i++) {
         printf("X[%d] = ", i);
-        scanf("%lf", &X[i]);
+        if (scanf("%lf", &X[i]) != 1) {
+            printf("Invalid input for X[%d].\n", i);
+            free(X);
+            free(Y);
+            free(Z);
+            return -1;
+        }
     }
 
     // Input values for vector Y
     printf("\nEnter %d elements for vector Y:\n", n);
     for (i = 0; i < n; i++) {
         printf("Y[%d] = ", i);
-        scanf("%lf", &Y[i]);
+        if (scanf("%lf", &Y[i]) != 1) {
+            printf("Invalid input for Y[%d].\n", i);
+            free(X);
+            free(Y);
+            free(Z);
+            return -1;
+        }
+    }
+    
+    printf("\n");
+
+    printf("Enter scalar value (A): ");
+    if (scanf("%lf", &A) != 1) {
+        printf("Invalid input for scalar value.\n");
+        return -1;
     }
 
-    // Call assembly function
-    printf("Calling daxpy function...\n");
-    daxpy(n, X, Y, Z, A);
-    printf("Returned from daxpy function...\n");
+    daxpy(X, Y, Z, n, A);
 
     // Display result (first 10 elements)
     printf("\nResult (First 10 Elements):\n");
     for (i = 0; i < (n < 10 ? n : 10); i++) {
-        printf("Z[%d] = %.2f\n", i, Z[i]);
+        printf("Z[%d] = %.2lf\n", i, Z[i]);
     }
 
     // Free allocated memory
