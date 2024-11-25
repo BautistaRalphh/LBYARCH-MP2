@@ -1,14 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 extern void daxpy(double *X, double *Y, double *Z, int n, double A);
 
 int main() {
-    int n, i, j;
+    int n, i;
     double *X, *Y, *Z, A;
-	clock_t start, end;
-    double total_time, avg_time, run_time;
 
     // Input for vector size and scalar
     printf("Enter vector size (n): ");
@@ -63,27 +60,8 @@ int main() {
         printf("Invalid input for scalar value.\n");
         return -1;
     }
-	
-	total_time = 0.0;
-	// Run daxpy 30 times and time the kernel portion
-    for (j = 0; j < 30; j++) {
-        start = clock(); // Start timing
-        daxpy(X, Y, Z, n, A); // Kernel operation
-        end = clock(); // End timing
 
-        // Calculate elapsed time for the kernel for this run
-        run_time = ((double)(end - start)) / CLOCKS_PER_SEC;
-
-        // Print runtime for this individual run
-        // printf("Run %d execution time: %.6f seconds\n", j + 1, run_time);
-
-        total_time += run_time; // Add the run time to total time
-    }
-
-    
-	avg_time = total_time / 30.0; // Average execution time
-    printf("\nAverage execution time for vector size n = %d: %.6f seconds\n", n, avg_time);
-
+    daxpy(X, Y, Z, n, A);
 
     // Display result (first 10 elements)
     printf("\nResult (First 10 Elements):\n");
