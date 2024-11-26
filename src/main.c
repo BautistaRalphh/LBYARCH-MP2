@@ -59,7 +59,7 @@ int main() {
     printf("\n");
 
     // Run daxpy 30 times and time the kernel portion
-    for (j = 0; j < 3; j++) {
+    for (j = 0; j < 30; j++) {
         
         start = clock(); // Start timing
 
@@ -92,7 +92,7 @@ int main() {
 
     }
 
-    avg_time = total_time / 3.0; 
+    avg_time = total_time / 30.0; 
     printf("\nAverage execution time for vector size n = %d: %.6f seconds\n", n, avg_time);
 
     free(X);
