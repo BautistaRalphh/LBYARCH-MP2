@@ -60,14 +60,14 @@ int main() {
 
     // Run daxpy 30 times and time the kernel portion
     for (j = 0; j < 30; j++) {
-        
-        start = clock(); // Start timing
 
-        printf("\nEnter the scalar value you for this loop (A): ");
+        printf("\nEnter the scalar value for loop #%d (A): ", j);
         if (scanf("%lf", &A) != 1) {
             printf("Invalid input for scalar value.\n");
             return -1;
         }
+
+        start = clock(); // Start timing
 
         daxpy(X, Y, Z, n, A); // Kernel operation
 
