@@ -4,9 +4,16 @@
 
 extern void daxpy(double *X, double *Y, double *Z, int n, double A);
 
+// C implementation of daxpy for verification
+void daxpy_c(double *X, double *Y, double *Z, int n, double A) {
+    for (int i = 0; i < n; i++) {
+        Z[i] = A * X[i] + Y[i];
+    }
+}
+
 int main() {
     int n, i, j;
-    double *X, *Y, *Z, A;
+    double *X, *Y, *Z, *Z_c, A;
     clock_t start, end;
     double total_time = 0.0, avg_time, run_time;
 
@@ -49,12 +56,14 @@ int main() {
     X = (double *)malloc(n * sizeof(double));
     Y = (double *)malloc(n * sizeof(double));
     Z = (double *)malloc(n * sizeof(double));
-
-    if (!X || !Y || !Z) {
+	Z_c = (double *)malloc(n * sizeof(double));
+	
+    if (!X || !Y || !Z || !Z_c) {
         printf("Memory allocation failed.\n");
         free(X);
         free(Y);
         free(Z);
+		free(Z_c);
         return -1;
     }
 
@@ -76,6 +85,7 @@ int main() {
             return -1;
         }
 
+		// Call the SASM daxpy implementation
         daxpy(X, Y, Z, n, A);
 
         // Print results (show first 10 values of Z)
@@ -90,7 +100,32 @@ int main() {
         printf("Run %d execution time: %.6f seconds\n", j + 1, run_time);
 
         total_time += run_time; 
-
+		
+		// Call the C daxpy implementation for verification
+		daxpy_c(X, Y, Z_c, n, A);
+		
+		// Print the C implementation results (show first 10 values of Z_c)
+		printf("\nC Result[%d] (First 10 values only):\n", j + 1);
+		for (i = 0; i < (n < 10 ? n : 10); i++) {
+			printf("Z_c[%d] = %.2lf\n", i, Z_c[i]);
+		}
+		
+		// Verify correctness by comparing Z and Z_c
+		int correct = 1;
+		for (i = 0; i < n; i++) {
+			if (Z[i] != Z_c[i]) {
+				correct = 0;
+				printf("Mismatch at index %d: SASM Z[%d] = %.2lf, C Z[%d] = %.2lf\n",
+					   i, i, Z[i], i, Z_c[i]);
+				break;
+			}
+		}
+		if (correct) {
+			printf("SASM output matches C output for loop#%d.\n", j + 1);
+		} else {
+			printf("SASM output does not match C output for loop#%d.\n", j + 1);
+		}
+	
         for (i = 0; i < n; i++) {
             X[i] = X[i] + 1;
             Y[i] = Y[i] + 1;
