@@ -34,4 +34,5 @@ L1:
     jmp L1                    ; Repeat the loop
 
 .done:
+    movsd xmm0, xmm6 
     ret

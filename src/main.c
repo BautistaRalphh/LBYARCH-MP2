@@ -7,8 +7,8 @@ extern void daxpy(double *X, double *Y, double *Z, int n, double A);
 int main() {
     int n, i, j;
     double *X, *Y, *Z, A;
-	clock_t start, end;
-    double total_time, avg_time, run_time;
+    clock_t start, end;
+    double total_time = 0.0, avg_time, run_time;
 
     // Input for vector size and scalar
     printf("Enter vector size (n): ");
@@ -55,43 +55,46 @@ int main() {
             return -1;
         }
     }
-    
+
     printf("\n");
 
-    printf("Enter scalar value (A): ");
-    if (scanf("%lf", &A) != 1) {
-        printf("Invalid input for scalar value.\n");
-        return -1;
-    }
-	
-	total_time = 0.0;
-	// Run daxpy 30 times and time the kernel portion
-    for (j = 0; j < 30; j++) {
+    // Run daxpy 30 times and time the kernel portion
+    for (j = 0; j < 3; j++) {
+        
         start = clock(); // Start timing
+
+        printf("\nEnter the scalar value you for this loop (A): ");
+        if (scanf("%lf", &A) != 1) {
+            printf("Invalid input for scalar value.\n");
+            return -1;
+        }
+
         daxpy(X, Y, Z, n, A); // Kernel operation
+
+        // Print results
+        printf("\nResult[%d]:\n", j);
+        for (i = 0; i < (n < 10 ? n : 10); i++) {
+            printf("Z[%d] = %.2lf\n", i, Z[i]);
+        }
+
         end = clock(); // End timing
 
-        // Calculate elapsed time for the kernel for this run
         run_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+        printf("Run %d execution time: %.6f seconds\n", j + 1, run_time);
 
-        // Print runtime for this individual run
-        // printf("Run %d execution time: %.6f seconds\n", j + 1, run_time);
+        total_time += run_time; 
 
-        total_time += run_time; // Add the run time to total time
+        // Increment the values of X and Y each loop
+        for (i = 0; i < n; i++) {
+            X[i] = X[i] + 1;
+            Y[i] = Y[i] + 1;
+        }
+
     }
 
-    
-	avg_time = total_time / 30.0; // Average execution time
+    avg_time = total_time / 3.0; 
     printf("\nAverage execution time for vector size n = %d: %.6f seconds\n", n, avg_time);
 
-
-    // Display result (first 10 elements)
-    printf("\nResult (First 10 Elements):\n");
-    for (i = 0; i < (n < 10 ? n : 10); i++) {
-        printf("Z[%d] = %.2lf\n", i, Z[i]);
-    }
-
-    // Free allocated memory
     free(X);
     free(Y);
     free(Z);
