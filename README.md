@@ -104,3 +104,6 @@ Below is a summary of the execution times (in seconds) for various runs of the D
 
 - **Bautista, Ralph Gabriel R.**
 - **Lopez, Ghee Kaye S.**
+
+## GDrive Link of the Screenshot and Video of the execution of our program
+https://drive.google.com/drive/folders/1CIa33VVs9TQDD6wx-4n0THgfkVfCDvtK?usp=sharing
